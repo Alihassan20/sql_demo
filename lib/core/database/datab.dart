@@ -4,7 +4,15 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class SqlDb{
-  static Database? db;
+  static Database? _db;
+
+  Future<Database?> get db async{
+    if(_db == null){
+      _db = await intialDb();
+      return _db;
+    }
+    return _db;
+  }
 
 
   intialDb() async{
