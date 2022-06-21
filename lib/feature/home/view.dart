@@ -25,7 +25,15 @@ class _HomeState extends State<Home> {
             ElevatedButton(onPressed: () async{
               var response = await sqlDb.readData("SELECT * FROM 'notes'");
               print(response);
-            }, child: Text("READ DATA"))
+            }, child: Text("READ DATA")),
+            ElevatedButton(onPressed: () async{
+              var response = await sqlDb.deleteData("DELETE FROM 'notes' WHERE id = 2");
+              print(response);
+            }, child: Text("DELETE DATA")),
+            ElevatedButton(onPressed: () async{
+              var response = await sqlDb.updateData("UPDATE 'notes' SET 'note'= 'note 5' WHERE id = 1 ");
+              print(response);
+            }, child: Text("UPDATE DATA")),
           ],
         ),
       ),
