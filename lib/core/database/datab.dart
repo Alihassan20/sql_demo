@@ -21,9 +21,41 @@ class SqlDb{
     var myDb = await openDatabase(path, onCreate:_onCreate);
     return myDb;
   }
+
+
+
   _onCreate(Database db, int version)async{
     await db.execute(
         'CREATE TABLE notes (id INTEGER AUTOINCREMENT NOT NULL PRIMARY KEY, notes TEXT NOT NULL)');
     print("DATA BASE CRATED ===============================");
   }
+
+//get
+  readData(String sql) async {
+    Database? mydb = await db ;
+    List<Map> response = await mydb!.rawQuery(sql);
+    return response;
+  }
+//post add
+
+  insertData(String sql) async {
+    Database? mydb = await db ;
+    int response = await mydb!.rawInsert(sql);
+    return response;
+  }
+//Delete
+  deleteData(String sql) async {
+    Database? mydb = await db ;
+    int response = await mydb!.rawDelete(sql);
+    return response;
+  }
+//put update
+  updateData(String sql) async {
+    Database? mydb = await db ;
+    int response = await mydb!.rawDelete(sql);
+    return response;
+  }
+
+
+
 }
