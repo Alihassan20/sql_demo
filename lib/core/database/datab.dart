@@ -23,12 +23,13 @@ class SqlDb{
   }
 
   _onUpgrade(Database db , int oldVersion,int newVersion)async{
+    print("_onUpgrade");
 
   }
 
   _onCreate(Database db, int version)async{
     await db.execute(
-        'CREATE TABLE notes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, note TEXT NOT NULL)');
+        'CREATE TABLE notes ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "note" TEXT NOT NULL)');
     print("DATA BASE CRATED ===============================");
   }
 
