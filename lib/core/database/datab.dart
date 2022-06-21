@@ -13,6 +13,6 @@ class SqlDb{
   }
   _onCreate(Database db, int version)async{
     await db.execute(
-        'CREATE TABLE notes (id INTEGER PRIMARY KEY, name TEXT, value INTEGER, num REAL)');
+        'CREATE TABLE notes (id AUTOINCREMENT NOT NULL PRIMARY KEY, name TEXT, value INTEGER, num REAL)');
   }
 }
