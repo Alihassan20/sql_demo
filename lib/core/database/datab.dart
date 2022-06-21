@@ -18,11 +18,13 @@ class SqlDb{
   intialDb() async{
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'ali.db');
-    var myDb = await openDatabase(path, onCreate:_onCreate);
+    var myDb = await openDatabase(path,version: 1, onCreate:_onCreate,onUpgrade: _onUpgrade);
     return myDb;
   }
 
+  _onUpgrade(Database db , int oldVersion,int newVersion)async{
 
+  }
 
   _onCreate(Database db, int version)async{
     await db.execute(
