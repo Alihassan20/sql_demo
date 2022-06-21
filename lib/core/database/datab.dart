@@ -23,7 +23,9 @@ class SqlDb{
   }
 
   _onUpgrade(Database db , int oldVersion,int newVersion)async{
+    await db.execute("ALERT TABLE notes ADD COLUMN color TEXT");
     print("_onUpgrade");
+
 
   }
 
@@ -57,6 +59,14 @@ class SqlDb{
     Database? mydb = await db ;
     int response = await mydb!.rawDelete(sql);
     return response;
+  }
+
+
+
+  deleteDatabaseDone()async{
+    var databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, 'ali.db');
+    await deleteDatabase(path);
   }
 
 
