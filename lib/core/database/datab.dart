@@ -28,7 +28,7 @@ class SqlDb{
 
   _onCreate(Database db, int version)async{
     await db.execute(
-        'CREATE TABLE notes (id INTEGER AUTOINCREMENT NOT NULL PRIMARY KEY, notes TEXT NOT NULL)');
+        'CREATE TABLE notes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, note TEXT NOT NULL)');
     print("DATA BASE CRATED ===============================");
   }
 
