@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:sql_demo/core/database/datab.dart';
 import 'package:sql_demo/feature/addNote/view.dart';
 
+import '../editNote/view.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -47,7 +49,8 @@ class _HomeState extends State<Home> {
         },
         child: const Icon(Icons.add),
       ),
-      body: ListView(
+      body: loading == true? Center(child: Text("Loading ..... ")):
+      ListView(
         children: [
           TextButton(
               onPressed: () async {
@@ -80,70 +83,76 @@ class _HomeState extends State<Home> {
                     });
                   },
                   confirmDismiss: (DismissDirection direction) async {
-                    await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            content: Text(
-                                "Are You Sure You Want To Delete This ${note[index]['note']}"),
-                            actions: [
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              15)),
-                                      primary: Colors.transparent,
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 10),
-                                      textStyle: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text("Cancel")),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              15)),
-                                      primary: const Color.fromRGBO(
-                                          255, 91, 56, 1),
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 10),
-                                      textStyle: const TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                  onPressed: () async{
-                                    setState(() {
-                                      sqlDb.deleteData("DELETE FROM 'notes' WHERE id = ${note[index]['id']}");
-                                      note.remove(note[index]);
-                                      print("delet+++++++++++++++");
-                                      Get.snackbar(
-                                        'Your Note has been updated',
-                                        'Do you want to Undo?',
-                                        mainButton: TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                note.insert(
-                                                    index, note[index]);
-                                              });
-                                            },
-                                            child: const Text("Undo")),
-                                      );
-                                      Navigator.of(context).pop();
-                                    });
-                                  },
-                                  child: const Text("Delete")),
-                            ],
-                          );
-                        });
+                   if(direction == DismissDirection.startToEnd){
+                     await showDialog(
+                         context: context,
+                         builder: (_) {
+                           return AlertDialog(
+                             content: Text(
+                                 "Are You Sure You Want To Delete This ${note[index]['note']}"),
+                             actions: [
+                               ElevatedButton(
+                                   style: ElevatedButton.styleFrom(
+                                       shape: RoundedRectangleBorder(
+                                           borderRadius:
+                                           BorderRadius.circular(
+                                               15)),
+                                       primary: Colors.transparent,
+                                       padding:
+                                       const EdgeInsets.symmetric(
+                                           horizontal: 20,
+                                           vertical: 10),
+                                       textStyle: const TextStyle(
+                                           fontSize: 25,
+                                           fontWeight: FontWeight.bold)),
+                                   onPressed: () {
+                                     Navigator.of(context).pop();
+                                   },
+                                   child: const Text("Cancel")),
+                               ElevatedButton(
+                                   style: ElevatedButton.styleFrom(
+                                       shape: RoundedRectangleBorder(
+                                           borderRadius:
+                                           BorderRadius.circular(
+                                               15)),
+                                       primary: const Color.fromRGBO(
+                                           255, 91, 56, 1),
+                                       padding:
+                                       const EdgeInsets.symmetric(
+                                           horizontal: 20,
+                                           vertical: 10),
+                                       textStyle: const TextStyle(
+                                           fontSize: 25,
+                                           fontWeight: FontWeight.bold)),
+                                   onPressed: () async{
+                                     setState(() {
+                                       sqlDb.deleteData("DELETE FROM 'notes' WHERE id = ${note[index]['id']}");
+                                       note.remove(note[index]);
+                                       print("delet+++++++++++++++");
+                                       Get.snackbar(
+                                         'Your Note has been updated',
+                                         'Do you want to Undo?',
+                                         mainButton: TextButton(
+                                             onPressed: () {
+                                               setState(() {
+                                                 note.insert(
+                                                     index, note[index]);
+                                               });
+                                             },
+                                             child: const Text("Undo")),
+                                       );
+                                       Navigator.of(context).pop();
+                                     });
+                                   },
+                                   child: const Text("Delete")),
+                             ],
+                           );
+                         });
+                   }else{
+                     Navigator.of(context).push(MaterialPageRoute(builder: (_)=>
+                         EditNote(note: note[index]['note'], title: note[index]['title'], id: note[index]['id'])));
+                   }
+
                   },
                   background: Container(
                     decoration: BoxDecoration(
@@ -161,6 +170,27 @@ class _HomeState extends State<Home> {
                         Icon(
                           Icons.delete_forever,
                           color: Colors.redAccent,
+                          size: 40,
+                        ),
+                      ],
+                    ),
+                  ),
+                  secondaryBackground:Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(5)),
+                    alignment: Alignment.center,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Edit',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Icon(
+                          Icons.edit,
+                          color: Colors.white,
                           size: 40,
                         ),
                       ],
