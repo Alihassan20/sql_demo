@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sql_demo/core/database/datab.dart';
+import 'package:sql_demo/feature/addNote/view.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -19,8 +20,25 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(" Your Notes "),
+        centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AddNote()));
+        },
+        child: Icon(Icons.add),
+      ),
       body: ListView(
         children: [
+          TextButton(
+              onPressed: () async {
+                await sqlDb.deleteDatabaseDone();
+                print("done");
+              },
+              child: Text("DELETE ALL DATABASE ")),
           FutureBuilder(
               future: readData(),
               builder:
@@ -32,54 +50,58 @@ class _HomeState extends State<Home> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return Card(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text("${snapshot.data![index]['id']}"),
-                              Text("${snapshot.data![index]['note']}"),
-                            ],
-                          ),
-                        );
+                            child: ListTile(
+                          title: Text("${snapshot.data![index]['title']}"),
+                          trailing: Text("${snapshot.data![index]['note']}"),
+                        ));
                       });
                 }
-                return CircularProgressIndicator();
+                return Center(child: Text("No Note Added"));
               }),
+
           // Center(
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                  onPressed: () async {
-                    int response = await sqlDb.insertData(
-                        "INSERT INTO 'notes' ('note') VALUES ('note2')");
-                    print(response);
-                  },
-                  child: Text("INSERT DATA")),
-              ElevatedButton(
-                  onPressed: () async {
-                    var response =
-                        await sqlDb.readData("SELECT * FROM 'notes'");
-                    print(response);
-                  },
-                  child: Text("READ DATA")),
-              ElevatedButton(
-                  onPressed: () async {
-                    var response = await sqlDb
-                        .deleteData("DELETE FROM 'notes' WHERE id = 2");
-                    print(response);
-                  },
-                  child: Text("DELETE DATA")),
-              ElevatedButton(
-                  onPressed: () async {
-                    var response = await sqlDb.updateData(
-                        "UPDATE 'notes' SET 'note'= 'note 5' WHERE id = 1 ");
-                    print(response);
-                  },
-                  child: Text("UPDATE DATA")),
-            ],
-          ),
         ],
       ),
     );
   }
 }
+
+// Column(
+// mainAxisAlignment: MainAxisAlignment.center,
+// children: [
+// ElevatedButton(
+// onPressed: () async {
+// int response = await sqlDb.insertData(
+// "INSERT INTO 'notes' ('note') VALUES ('note2')");
+// print(response);
+// },
+// child: Text("INSERT DATA")),
+// ElevatedButton(
+// onPressed: () async {
+// var response =
+//     await sqlDb.readData("SELECT * FROM 'notes'");
+// print(response);
+// },
+// child: Text("READ DATA")),
+// ElevatedButton(
+// onPressed: () async {
+// var response = await sqlDb
+//     .deleteData("DELETE FROM 'notes' WHERE id = 2");
+// print(response);
+// },
+// child: Text("DELETE DATA")),
+// ElevatedButton(
+// onPressed: () async {
+// var response = await sqlDb.updateData(
+// "UPDATE 'notes' SET 'note'= 'note 5' WHERE id = 1 ");
+// print(response);
+// },
+// child: Text("UPDATE DATA")),
+// ElevatedButton(
+// onPressed: () async {
+// await sqlDb.deleteDatabaseDone();
+// print("done");
+// },
+// child: Text("DELETE ALL DATABASE ")),
+// ],
+// ),

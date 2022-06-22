@@ -1,74 +1,79 @@
-
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class SqlDb{
+class SqlDb {
   static Database? _db;
 
-  Future<Database?> get db async{
-    if(_db == null){
+  Future<Database?> get db async {
+    if (_db == null) {
       _db = await intialDb();
       return _db;
+    } else {
+      return _db;
     }
-    return _db;
   }
 
-
-  intialDb() async{
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'ali.db');
-    var myDb = await openDatabase(path,version: 1, onCreate:_onCreate,onUpgrade: _onUpgrade);
-    return myDb;
+  intialDb() async {
+    String databasepath = await getDatabasesPath();
+    String path = join(databasepath, 'ali.db');
+    Database mydb = await openDatabase(path,
+        onCreate: _onCreate, version: 4, onUpgrade: _onUpgrade);
+    return mydb;
   }
 
-  _onUpgrade(Database db , int oldVersion,int newVersion)async{
-    await db.execute("ALERT TABLE notes ADD COLUMN color TEXT");
-    print("_onUpgrade");
-
-
+  _onUpgrade(Database db, int oldversion, int newversion) {
+    print("onUpgrade =====================================");
   }
 
-  _onCreate(Database db, int version)async{
-    await db.execute(
-        'CREATE TABLE notes ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "note" TEXT NOT NULL)');
-    print("DATA BASE CRATED ===============================");
+  _onCreate(Database db, int version) async {
+    Batch batch = db.batch();
+
+    batch.execute('''
+  CREATE TABLE "notes" (
+    "id" INTEGER  NOT NULL PRIMARY KEY  AUTOINCREMENT, 
+    "title" TEXT NOT NULL,
+    "note" TEXT NOT NULL
+  )
+ ''');
+
+ //    batch.execute('''
+ //  CREATE TABLE "student" (
+ //    "id" INTEGER  NOT NULL PRIMARY KEY  AUTOINCREMENT,
+ //    "title" TEXT NOT NULL,
+ //    "note" TEXT NOT NULL
+ //  )
+ // ''');
+    await batch.commit();
+    print(" onCreate =====================================");
   }
 
-//get
   readData(String sql) async {
-    Database? mydb = await db ;
+    Database? mydb = await db;
     List<Map> response = await mydb!.rawQuery(sql);
     return response;
   }
-//post add
 
   insertData(String sql) async {
-    Database? mydb = await db ;
+    Database? mydb = await db;
     int response = await mydb!.rawInsert(sql);
     return response;
   }
-//Delete
-  deleteData(String sql) async {
-    Database? mydb = await db ;
-    int response = await mydb!.rawDelete(sql);
-    return response;
-  }
-//put update
+
   updateData(String sql) async {
-    Database? mydb = await db ;
+    Database? mydb = await db;
+    int response = await mydb!.rawUpdate(sql);
+    return response;
+  }
+
+  deleteData(String sql) async {
+    Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
     return response;
   }
 
-
-
-  deleteDatabaseDone()async{
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'ali.db');
+  deleteDatabaseDone() async {
+    String databasepath = await getDatabasesPath();
+    String path = join(databasepath, 'ali.db');
     await deleteDatabase(path);
   }
-
-
-
 }
