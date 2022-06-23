@@ -76,4 +76,55 @@ class SqlDb {
     String path = join(databasepath, 'ali.db');
     await deleteDatabase(path);
   }
+
+
+
+// نفس ال read data بس الفرق اني بديلها اسم الجدول بس بدون الامر بتاع ال sql
+  read(String table) async {
+    Database? mydb = await db;
+    List<Map> response = await mydb!.query(table);
+    return response;
+  }
+
+
+
+  // نفس ال inseart data بس الفرق اني بديلها اسم الجدول , القيم بس بدون الامر بتاع ال sql
+
+
+  insert(String table,Map<String , Object?> values) async {
+    Database? mydb = await db;
+    int response = await mydb!.insert(table , values);
+    return response;
+  }
+
+
+
+  update(String table,Map<String , Object?> values, String? myWhere) async {
+    Database? mydb = await db;
+    int response = await mydb!.update(table , values , where: myWhere);
+    return response;
+  }
+
+  delete(String table,String? myWhere) async {
+    Database? mydb = await db;
+    int response = await mydb!.delete(table,where: myWhere);
+    return response;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
